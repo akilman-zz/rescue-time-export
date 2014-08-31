@@ -25,7 +25,7 @@ object Client extends App {
 
   val key = args(0)
   val perspective = "interval"
-  val beginDate = "2014-08-28"
+  val beginDate = "2012-01-01"
   val endDate = "2014-08-29"
 
   // spin up an actor system
