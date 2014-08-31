@@ -4,17 +4,14 @@ import org.scalatest.{Matchers, FlatSpec}
 
 class JsonProtocolSpec extends FlatSpec with Matchers {
 
-  "A JsonProtocol " should " map rescuetime.Result instances to JSON and back" in {
+  "A JsonProtocol " should " map rescuetime.QueryResult instances to JSON and back" in {
 
     // for implicit conversions
     import JsonProtocol._
-
-    val notes = "some notes"
-    val headers = List("rank", "nSeconds", "nPeople", "activity", "category", "productivity")
-    val timeEntry = TimeEntry(1, 1, 1, "activity", "category", 1)
+    import TestContants._
 
     // start with a proper result
-    val result = Result(notes, headers, List(timeEntry))
+    val result = QueryResult(notes, headers, List(timeEntry))
 
     // convert to an API result that spray-json can consume via implicit conversion
     val apiResult:ApiResult = result
@@ -34,7 +31,7 @@ class JsonProtocolSpec extends FlatSpec with Matchers {
     parsedApiResult should equal(apiResult)
 
     // and once again, back to first class form
-    val parsedResult:Result = parsedApiResult
+    val parsedResult:QueryResult = parsedApiResult
     parsedResult should equal(result)
   }
 }

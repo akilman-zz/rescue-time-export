@@ -50,7 +50,8 @@ case class ApiResult(notes: String, row_headers: List[String], rows: List[List[E
  * @param productivity level of productivity
  */
 case class TimeEntry(rank: Int, nSeconds: Int, nPeople: Int, activity: String, category: String, productivity: Int)
-case class Result(notes: String, rowHeaders: List[String], entries: List[TimeEntry])
+case class QueryResult(notes: String, rowHeaders: List[String], entries: List[TimeEntry])
+case class DataSet(startDate: String, endDate: String, results: List[QueryResult])
 
 /**
  * RescueTime API JSON protocol
@@ -63,25 +64,28 @@ object JsonProtocol extends DefaultJsonProtocol {
    * Implicit JsonWriter to translate between JSON <=> ApiResult
    */
   implicit val rescueTimeApiResultFormat  = jsonFormat3(ApiResult)
+  implicit val timeEntryFormat = jsonFormat6(TimeEntry)
+  implicit val queryFormat = jsonFormat3(QueryResult)
+  implicit val dataSetFormat = jsonFormat3(DataSet)
 
-  def eitherListToTimeEntry(row: List[Either[Int, String]]): TimeEntry = {
+  implicit def toTimeEntry(row: List[Either[Int, String]]): TimeEntry = {
     row match {
       case List(Left(rank), Left(nSeconds), Left(nPeople), Right(activity), Right(category), Left(productivity)) =>
         TimeEntry(rank, nSeconds, nPeople, activity, category, productivity)
     }
   }
   
-  implicit def timeEntryToEitherList(e: TimeEntry): List[Either[Int, String]] = {
+  implicit def toEitherList(e: TimeEntry): List[Either[Int, String]] = {
     List(Left(e.rank), Left(e.nSeconds), Left(e.nPeople), Right(e.activity), Right(e.category), Left(e.productivity))
   }
 
-  implicit def convertApiResultToProperResult(apiResult: ApiResult):Result = {
-    val entries = apiResult.rows.map(eitherListToTimeEntry)
-    Result(apiResult.notes, apiResult.row_headers, entries)
+  implicit def toQueryResult(apiResult: ApiResult):QueryResult = {
+    val entries = apiResult.rows.map(toTimeEntry)
+    QueryResult(apiResult.notes, apiResult.row_headers, entries)
   }
 
-  implicit def convertResultToApiResult(result: Result): ApiResult = {
-    val rows = result.entries.map(timeEntryToEitherList)
+  implicit def toApiResult(result: QueryResult): ApiResult = {
+    val rows = result.entries.map(toEitherList)
     ApiResult(result.notes, result.rowHeaders, rows)
   }
 }

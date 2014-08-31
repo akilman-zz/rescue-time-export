@@ -11,6 +11,7 @@ import spray.can.Http
 import spray.httpx.SprayJsonSupport
 import spray.client.pipelining._
 import spray.util._
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -18,7 +19,9 @@ import spray.util._
  *
  * No persistence of data.. yet
  */
-object Exporter extends App {
+object Client extends App {
+
+  val log = LoggerFactory.getLogger("Client")
 
   val key = args(0)
   val perspective = "interval"
@@ -28,7 +31,6 @@ object Exporter extends App {
   // spin up an actor system
   implicit val system = ActorSystem("simple-spray-client")
   import system.dispatcher
-  val log = Logging(system, getClass)
 
   log.info("Requesting RescueTime data")
   import JsonProtocol._
@@ -42,7 +44,7 @@ object Exporter extends App {
   responseFuture onComplete {
     case Success(apiResult @ ApiResult(notes, row_headers, rows)) =>
 
-      val result: Result = apiResult
+      val result: QueryResult = apiResult
       val categoryVsEntry = result.entries.groupBy(t => t.category)
 
       // print all fancy-like
@@ -57,10 +59,10 @@ object Exporter extends App {
 
       shutdown()
     case Success(somethingUnexpected) =>
-      log.warning("The RescueTime API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
+      log.warn("The RescueTime API call was successful but returned something unexpected: '{}'.", somethingUnexpected)
       shutdown()
     case Failure(error) =>
-      log.error(error, "Couldn't get data")
+      log.error("Couldn't get data", error)
       shutdown()
   }
   def shutdown(): Unit = {
