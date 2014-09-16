@@ -18,7 +18,7 @@ libraryDependencies += "io.spray" % "spray-client" % "1.3.1"
 
 libraryDependencies += "io.spray" % "spray-can" % "1.3.1"
 
-libraryDependencies += "com.google.guava" % "guava" % "17.0"
+libraryDependencies += "com.google.guava" % "guava" % "18.0"
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.2"
 
