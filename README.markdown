@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/akilman/rescue-time-export.svg?branch=master)](https://travis-ci.org/akilman/rescue-time-export)
-[![Dependency Status](https://www.versioneye.com/user/projects/54182fdf54ffbd8b43000055/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54182fdf54ffbd8b43000055)
 
+[![Dependency Status](https://www.versioneye.com/user/projects/541830f154ffbdc3c20000d4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/541830f154ffbdc3c20000d4)
 
 Overview
 ========
